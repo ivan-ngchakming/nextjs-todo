@@ -3,10 +3,17 @@ import Checkbox from "@mui/material/Checkbox";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Status, Todo } from "../type";
+import { useTodo } from "../contexts/TodoContext";
 
 const TodoItem = ({ item }: { item: Todo }) => {
+  const { deleteItem } = useTodo();
+
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
     // Implement me
+  };
+
+  const handleRemove = () => {
+    deleteItem(item);
   };
 
   return (
@@ -20,7 +27,7 @@ const TodoItem = ({ item }: { item: Todo }) => {
       <IconButton>
         <EditIcon />
       </IconButton>
-      <IconButton>
+      <IconButton onClick={handleRemove}>
         <DeleteIcon />
       </IconButton>
     </Box>

@@ -34,7 +34,7 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const deleteItem = useCallback((item: Todo) => {
-    // Implement me
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
   }, []);
 
   const value = useMemo(
