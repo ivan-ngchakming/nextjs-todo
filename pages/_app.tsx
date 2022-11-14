@@ -5,6 +5,7 @@ import "@fontsource/roboto/700.css";
 import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import TodoProvider from "../lib/todo/contexts/TodoContext";
 
 const theme = createTheme();
 
@@ -16,7 +17,9 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        <TodoProvider>
+          <Component {...pageProps} />
+        </TodoProvider>
       </ThemeProvider>
     </>
   );
