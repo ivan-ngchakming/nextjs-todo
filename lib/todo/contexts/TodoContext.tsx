@@ -5,11 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { Todo } from "../type";
+import { v4 as uuid } from "uuid";
+import { Status, Todo } from "../type";
 
 type TodoContextValue = {
   items: Todo[];
-  addItem: (item: Todo) => void;
+  addItem: (content: string) => void;
   editItem: (item: Todo) => void;
   deleteItem: (item: Todo) => void;
 };
@@ -19,8 +20,13 @@ const TodoContext = createContext<TodoContextValue>(null as any);
 const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<Todo[]>([]);
 
-  const addItem = useCallback((item: Todo) => {
-    // Implement me
+  const addItem = useCallback((content: string) => {
+    const newTodoItem: Todo = {
+      id: uuid(),
+      content,
+      status: Status.Unfinished,
+    };
+    setItems((prev) => [...prev, newTodoItem]);
   }, []);
 
   const editItem = useCallback((item: Todo) => {
