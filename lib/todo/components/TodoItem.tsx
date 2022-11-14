@@ -6,10 +6,13 @@ import { Status, Todo } from "../type";
 import { useTodo } from "../contexts/TodoContext";
 
 const TodoItem = ({ item }: { item: Todo }) => {
-  const { deleteItem } = useTodo();
+  const { editItem, deleteItem } = useTodo();
 
-  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // Implement me
+  const handleCheck = () => {
+    editItem({
+      ...item,
+      status: item.status === Status.Done ? Status.Unfinished : Status.Done,
+    });
   };
 
   const handleRemove = () => {
