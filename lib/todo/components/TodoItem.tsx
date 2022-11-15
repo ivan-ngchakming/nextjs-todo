@@ -27,6 +27,14 @@ const TodoItem = ({ item }: { item: Todo }) => {
         inputProps={{ "aria-label": "controlled" }}
       />
       <Typography sx={{ ml: 2, flexGrow: 1 }}>{item.content}</Typography>
+      <Typography
+        variant="body2"
+        color="gray"
+        fontFamily="monospace"
+        sx={{ mx: 2 }}
+      >
+        {item.dueDate ?? "-"}
+      </Typography>
       <IconButton href={`./edit/${item.id}`}>
         <EditIcon />
       </IconButton>
