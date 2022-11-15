@@ -42,6 +42,20 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
     setItems((prev) => prev.filter((i) => i.id !== item.id));
   }, []);
 
+  const syncTodoData = async (todoItems: Todo[]) => {
+    fetch("./api/todo", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(todoItems),
+    });
+  };
+
+  useEffect(() => {
+    syncTodoData(items);
+  }, [items]);
+
   const value = useMemo(
     () => ({
       items,
