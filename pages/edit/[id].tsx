@@ -91,7 +91,7 @@ const EditTodoItemPage = ({ item }: { item: Todo }) => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           fullWidth
-          sx={{ m: 1 }}
+          sx={{ my: 1 }}
         />
 
         <TextField
@@ -100,7 +100,7 @@ const EditTodoItemPage = ({ item }: { item: Todo }) => {
           onChange={(e) => setDueDate(e.target.value)}
           type="date"
           fullWidth
-          sx={{ m: 1 }}
+          sx={{ my: 1 }}
           InputLabelProps={{
             shrink: true,
           }}
