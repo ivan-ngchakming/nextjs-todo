@@ -7,5 +7,5 @@ export interface Todo {
   id: string;
   status: Status;
   content: string;
-  dueDate?: Date;
+  dueDate?: string;
 }
