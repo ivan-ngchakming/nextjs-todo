@@ -4,6 +4,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { v4 as uuid } from "uuid";
@@ -13,17 +14,19 @@ type TodoContextValue = {
   items: Todo[];
   initItems: (initItems: Todo[]) => void;
   addItem: (content: string) => void;
-  editItem: (item: Todo) => void;
+  editItem: (item: Todo) => Promise<void>;
   deleteItem: (item: Todo) => void;
 };
 
 const TodoContext = createContext<TodoContextValue>(null as any);
 
 const TodoProvider = ({ children }: { children: React.ReactNode }) => {
+  const itemsInitialized = useRef<boolean>(false);
   const [items, setItems] = useState<Todo[]>([]);
 
   const initItems = useCallback((initItems: Todo[]) => {
     setItems(initItems);
+    itemsInitialized.current = true;
   }, []);
 
   const addItem = useCallback((content: string) => {
@@ -36,11 +39,21 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const editItem = useCallback(
-    (item: Todo) => {
-      const itemIndex = items.findIndex((i) => i.id === item.id);
-      const newItems = items.slice();
-      newItems[itemIndex] = item;
-      setItems(newItems);
+    async (item: Todo) => {
+      if (itemsInitialized.current) {
+        const itemIndex = items.findIndex((i) => i.id === item.id);
+        const newItems = items.slice();
+        newItems[itemIndex] = item;
+        setItems(newItems);
+      } else {
+        const newItems: Todo[] = await fetch("/api/todo").then((res) =>
+          res.json()
+        );
+        const itemIndex = newItems.findIndex((i) => i.id === item.id);
+        newItems[itemIndex] = item;
+        setItems(newItems);
+        itemsInitialized.current = true;
+      }
     },
     [items]
   );
@@ -50,7 +63,7 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const syncTodoData = async (todoItems: Todo[]) => {
-    fetch("./api/todo", {
+    fetch("/api/todo", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -60,7 +73,9 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    syncTodoData(items);
+    if (itemsInitialized.current) {
+      syncTodoData(items);
+    }
   }, [items]);
 
   const value = useMemo(
