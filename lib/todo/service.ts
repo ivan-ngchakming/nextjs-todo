@@ -7,7 +7,7 @@ const TODO_ITEMS_JSON_FILE = path.resolve(
   "./todoItems.json"
 );
 
-export const loadTodoItems = () => {
+export const loadTodoItems = (): Todo[] => {
   try {
     const data = JSON.parse(fs.readFileSync(TODO_ITEMS_JSON_FILE).toString());
     return data;
@@ -18,6 +18,11 @@ export const loadTodoItems = () => {
     }
     throw e;
   }
+};
+
+export const loadTodoItem = (id: string) => {
+  const items = loadTodoItems();
+  return items.find((i) => i.id === id) ?? null;
 };
 
 export const saveTodoItems = (items: Todo[]) => {
