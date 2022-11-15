@@ -25,7 +25,11 @@ const NewItemForm = () => {
           label="Enter Title"
         />
         <Box display="flex" sx={{ justifyContent: "center", mt: 4 }}>
-          <Button variant="contained" onClick={handleAdd}>
+          <Button
+            variant="contained"
+            onClick={handleAdd}
+            disabled={userInput === ""}
+          >
             Add
           </Button>
         </Box>
