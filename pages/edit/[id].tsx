@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, TextField, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import { GetServerSideProps } from "next";
 import Router from "next/router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTodo } from "../../lib/todo/contexts/TodoContext";
 import { loadTodoItem } from "../../lib/todo/service";
 import { Status, Todo } from "../../lib/todo/type";
@@ -30,6 +30,10 @@ const EditTodoItemPage = ({ item }: { item: Todo }) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!inputValid) {
+      return;
+    }
+
     editItem({
       ...item,
       content,
@@ -38,6 +42,8 @@ const EditTodoItemPage = ({ item }: { item: Todo }) => {
     });
     Router.push("/");
   };
+
+  const inputValid = useMemo(() => content !== "", [content]);
 
   if (!item) {
     return (
@@ -119,6 +125,7 @@ const EditTodoItemPage = ({ item }: { item: Todo }) => {
             color="success"
             sx={{ minWidth: 100 }}
             type="submit"
+            disabled={!inputValid}
           >
             Save
           </Button>
