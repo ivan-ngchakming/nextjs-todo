@@ -1,6 +1,5 @@
 import { Box, Container } from "@mui/material";
 import { GetServerSideProps } from "next";
-import { Navbar } from "../lib/shared/components";
 import { NewItemForm, TodoItem } from "../lib/todo/components";
 import { useTodo } from "../lib/todo/contexts/TodoContext";
 import { loadTodoItems } from "../lib/todo/service";
@@ -18,7 +17,6 @@ export default function Home({ items: initItems }: { items: Todo[] }) {
 
   return (
     <Box>
-      <Navbar />
       <Container maxWidth="sm" sx={{ mt: 4 }}>
         <NewItemForm />
         <Box mt={6}>
