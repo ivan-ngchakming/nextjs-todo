@@ -1,10 +1,20 @@
 import { Box, Container } from "@mui/material";
+import { GetServerSideProps } from "next";
 import { Navbar } from "../lib/shared/components";
 import { NewItemForm, TodoItem } from "../lib/todo/components";
 import { useTodo } from "../lib/todo/contexts/TodoContext";
+import { loadTodoItems } from "../lib/todo/service";
+import { Todo } from "../lib/todo/type";
 
-export default function Home() {
-  const { items } = useTodo();
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const todoItems = loadTodoItems();
+  return {
+    props: { items: todoItems }, // will be passed to the page component as props
+  };
+};
+
+export default function Home({ items: initItems }: { items: Todo[] }) {
+  const { items } = useTodo(initItems);
 
   return (
     <Box>

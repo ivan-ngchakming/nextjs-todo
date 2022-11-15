@@ -2,6 +2,7 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -10,6 +11,7 @@ import { Status, Todo } from "../type";
 
 type TodoContextValue = {
   items: Todo[];
+  initItems: (initItems: Todo[]) => void;
   addItem: (content: string) => void;
   editItem: (item: Todo) => void;
   deleteItem: (item: Todo) => void;
@@ -20,6 +22,10 @@ const TodoContext = createContext<TodoContextValue>(null as any);
 const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   const [items, setItems] = useState<Todo[]>([]);
 
+  const initItems = useCallback((initItems: Todo[]) => {
+    setItems(initItems);
+  }, []);
+
   const addItem = useCallback((content: string) => {
     const newTodoItem: Todo = {
       id: uuid(),
@@ -29,14 +35,15 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
     setItems((prev) => [...prev, newTodoItem]);
   }, []);
 
-  const editItem = useCallback((item: Todo) => {
-    setItems((prev) => [
-      ...prev.filter((i) => i.id !== item.id),
-      {
-        ...item,
-      },
-    ]);
-  }, []);
+  const editItem = useCallback(
+    (item: Todo) => {
+      const itemIndex = items.findIndex((i) => i.id === item.id);
+      const newItems = items.slice();
+      newItems[itemIndex] = item;
+      setItems(newItems);
+    },
+    [items]
+  );
 
   const deleteItem = useCallback((item: Todo) => {
     setItems((prev) => prev.filter((i) => i.id !== item.id));
@@ -59,18 +66,28 @@ const TodoProvider = ({ children }: { children: React.ReactNode }) => {
   const value = useMemo(
     () => ({
       items,
+      initItems,
       addItem,
       editItem,
       deleteItem,
     }),
-    [addItem, deleteItem, editItem, items]
+    [addItem, deleteItem, editItem, initItems, items]
   );
 
   return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
 };
 
-export const useTodo = () => {
-  return useContext(TodoContext);
+export const useTodo = (initItems?: Todo[]) => {
+  const context = useContext(TodoContext);
+
+  useEffect(() => {
+    if (initItems) {
+      context.initItems(initItems);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return context;
 };
 
 export default TodoProvider;
